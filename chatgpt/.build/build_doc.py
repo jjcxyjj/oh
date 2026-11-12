@@ -1,0 +1,88 @@
+from pathlib import Path
+from docx import Document
+from docx.shared import Inches,Pt,RGBColor
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+r=Path('/Users/jiaoyuanxiang/Desktop/oh/chatgpt');d=Document();sec=d.sections[0];sec.page_width=Inches(8.5);sec.page_height=Inches(11);sec.top_margin=sec.bottom_margin=Inches(.7);sec.left_margin=sec.right_margin=Inches(.8)
+for n in ['Normal','Title','Heading 1','Heading 2']:
+ s=d.styles[n];s.font.name='Microsoft YaHei';s._element.rPr.rFonts.set(qn('w:eastAsia'),'Microsoft YaHei');s.font.size=Pt(11 if n=='Normal' else 22 if n=='Title' else 16 if n=='Heading 1' else 13);s.font.color.rgb=RGBColor.from_string('000000' if n=='Title' else '1F3A5F' if n!='Normal' else '34465C')
+d.styles['Normal'].paragraph_format.space_after=Pt(8);d.styles['Normal'].paragraph_format.line_spacing=1.15
+sec.header.paragraphs[0].text='AudioSuite 离线编辑 Demo    技术方案与验证说明'
+sec.header.paragraphs[0].style=d.styles['Normal'];sec.header.paragraphs[0].runs[0].font.size=Pt(9)
+f=sec.footer.paragraphs[0];f.alignment=2;f.add_run('2026 年 11 月 10 日    ');fld=OxmlElement('w:fldSimple');fld.set(qn('w:instr'),'PAGE');f._p.append(fld)
+
+for style in d.styles:
+ for border in list(style.element.iter(qn('w:pBdr'))): border.getparent().remove(border)
+ if style.name in ['Normal','Title','Heading 1','Heading 2']:
+  fonts=style.element.rPr.rFonts
+  for key in list(fonts.attrib):
+   if 'Theme' in key: del fonts.attrib[key]
+md=[]
+def title(s):d.add_paragraph(s,'Title');md.append('# '+s)
+def h(s):d.add_heading(s,level=1);md.append('\n## '+s)
+def p(s):d.add_paragraph(s);md.append(s+'\n')
+def table(head,rows):
+ t=d.add_table(rows=1,cols=len(head));t.autofit=False
+ widths=[2.0,4.9] if len(head)==2 else [2.3]*3 if len(head)==3 else [1.725]*4
+ for col,width in zip(t.columns,widths): col.width=Inches(width)
+ for i,v in enumerate(head):t.rows[0].cells[i].text=v
+ for row in rows:
+  for c,v in zip(t.add_row().cells,row):c.text=str(v)
+ for ri,row in enumerate(t.rows):
+  for c in row.cells:
+   for pa in c.paragraphs:
+    pa.paragraph_format.space_after=Pt(5);pa.paragraph_format.space_before=Pt(5)
+    for run in pa.runs:run.font.size=Pt(10);run.bold=ri==0
+   if ri==0:
+    sh=OxmlElement('w:shd');sh.set(qn('w:fill'),'EAF0F7');c._tc.get_or_add_tcPr().append(sh)
+  trpr=row._tr.get_or_add_trPr();avoid=OxmlElement('w:cantSplit');trpr.append(avoid)
+ md.append('| '+' | '.join(head)+' |\n| '+' | '.join(['---']*len(head))+' |\n'+'\n'.join('| '+' | '.join(map(str,row))+' |' for row in rows))
+def page():d.add_page_break()
+title('AudioSuite 离线音频编辑技术方案')
+p('本方案面向鸿蒙应用开发与技术评审，说明如何把华为 AudioSuite 的离线编辑流程落地为可编译的单音轨均衡器 Demo，并提供电脑端交互演示、演示音频和汇报材料。')
+p('当前结论：原生工程已使用本机 HarmonyOS 6.1.1 API 24 SDK 编译通过，包含 ArkTS 界面、N-API 异步桥接和 C++ AudioSuite 渲染。HAP 尚未签名，HDC 未发现设备，因此不将编译成功等同于真机运行成功。')
+h('交付范围')
+table(['交付项','用途'],[['OfflineAudioDemo','DevEco Studio 工程及未签名 HAP'],['电脑交互演示','双击 HTML，实际执行 Web Audio EQ、试听和导出'],['技术文档和 PPT','实现原理、操作流程、约束和验收计划'],['演示材料','操作录屏、界面截图和三组 WAV 对照样本']])
+p('全部文件位于桌面 oh/chatgpt。正式交付放在 output，生成脚本、参考渲染和校验记录放在 .build。PPT 沿用指定的 ACE-Step 美化版配色、字体与六页版式。')
+h('功能边界')
+p('原生 Demo 使用内置 50 秒 PCM，支持原声直通、人声清晰、低频温暖三种 EQ 预设，以及离线渲染、原音与结果试听和系统文件导出。每次渲染都从原音开始，不叠加上一次结果。')
+p('本次原生实现不含外部音频导入、压缩格式解码、取消任务、实时预览、降噪、音源分离与混音。电脑演示额外支持浏览器解码导入音频，但其算法和性能不能代表 AudioSuite。')
+page();h('系统架构')
+p('ArkTS 页面管理素材、预设、处理状态和播放器。render(input, output, preset) 返回 Promise；N-API 把渲染任务提交到异步工作线程，C++ 完成管线建立、逐帧处理与文件写入后，在完成回调中 resolve 或 reject。')
+table(['模块','实现职责'],[['Index.ets','初始化沙箱文件、互斥操作、状态提示、AVPlayer 试听与 DocumentViewPicker 导出'],['offline_engine.cpp','参数校验、N-API 工作对象、AudioSuite 引擎与节点、WAV 写入、RAII 资源释放'],['Index.d.ts','render 方法的参数和 Promise 返回类型'],['build-profile.json5','HarmonyOS 6.1.1(24) SDK 与双架构构建设置']])
+h('离线渲染流程')
+for s in ['1. 检查输入和输出路径、预设索引。输入必须非空、长度按 4 字节对齐且不超过 120 秒。','2. 打开输入 PCM 与输出 .part 临时文件，预留 44 字节 WAV 头。','3. 创建 AudioSuite 引擎、EDIT_MODE 管线与节点构造器。','4. 配置输入格式和读取回调，查询 EQ 支持能力，创建并设置 EQ 节点，然后创建输出节点。','5. 依次连接输入、EQ、输出，启动管线，循环调用 RenderFrame。','6. 校验每帧状态与长度，写入返回的有效 PCM 数据；finished 为 true 后退出。','7. 停止管线、回填 WAV 数据长度并关闭文件，重命名 .part 为最终输出。','8. 逆序销毁节点、构造器、管线和引擎，回传成功或失败结果。']:p(s)
+page();h('音频格式与预设')
+p('原生输入是没有文件头的交错 PCM，采样率 48,000 Hz，双声道，16 bit 小端有符号整数。文件大小只能验证长度与对齐，无法推断原始采样率；调用方必须遵守格式约定。')
+p('20 ms 输出请求对应 0.020 × 48,000 × 2 × 2 = 3,840 字节，即每声道 960 个采样点。20 ms 是请求粒度，不能据此推断渲染耗时或交互延迟。')
+table(['频率 Hz','直通 dB','清晰 dB','温暖 dB'],[[f,0,a,b] for f,a,b in zip([31,62,125,250,500,1000,2000,4000,8000,16000],[-8,-6,-4,-2,0,2,2,0,-2,-4],[5,4,3,1,0,-1,-2,-2,-3,-4])])
+p('三种预设是本项目自定义参数，不是华为官方音质结论。“人声清晰”突出中高频；“低频温暖”增强低频。不同素材可能产生不同听感和峰值，需要真机试听与削波检测。')
+p('输出为标准 PCM WAV，包含 44 字节文件头。内置素材共有 9,600,000 字节 PCM，对应 2,400,000 个双声道采样帧与 50 秒时长。原生输出时长仍需在设备上实测确认。')
+page();h('状态管理与异常处理')
+p('页面维护 busy、ready 和 status。开始渲染时先置 busy，清除 ready 并停止播放器。成功后开放试听和导出；失败显示错误，finally 恢复交互。切换预设后将旧结果标记为不可用。')
+table(['异常场景','处理行为'],[['输入不存在、为空或长度不合法','拒绝任务并回传错误'],['设备不支持 EQ 节点','停止初始化并明确报错'],['引擎或节点 API 失败','返回 API 名称与错误码，RAII 清理'],['输出长度非法或未完成却零进度','中止渲染，不提交半成品'],['超过 10,000 次帧请求','中止循环，避免无限处理'],['写入、关闭或重命名失败','回传失败，清理 .part 临时文件'],['播放或导出异常','界面展示错误，不声明成功']])
+p('最终文件在完成后才替换。失败时磁盘可能保留上一轮完整结果，但页面 ready 已清除，不会把旧文件作为本次成功结果展示。')
+h('当前工程限制')
+p('UI 层禁止重复提交，但 N-API 层未提供跨页面全局任务锁或取消接口。页面离开后原生工作可能继续完成，因此当前设计适合单页面演示。生产化应增加任务标识、取消与生命周期绑定。')
+p('原生处理采用文件回调分块读取，ArkTS 初始化仍一次性读取内置素材并生成原音 WAV。需要支持长音频时，应改为流式初始化并记录内存峰值。当前未实现响度归一化或限制器，峰值保护属于后续工作。')
+page();h('构建与运行')
+p('1. 使用 DevEco Studio 打开 output/OfflineAudioDemo。当前构建使用本机 HarmonyOS 6.1.1 API 24，工程同时生成 arm64-v8a 与 x86_64 原生库。')
+p('2. 运行根目录 build_demo.command，脚本执行 OHPM 依赖同步与 assembleHap。最终 HAP 位于工程 entry/build/default/outputs/default。')
+p('3. 在 DevEco Studio 的 Signing Configs 中使用自己的开发者身份配置签名。当前未签名 HAP 不应直接当作可安装包使用。')
+p('4. 连接鸿蒙真机，开启 USB 调试并允许调试授权，确认 hdc list targets 返回设备标识。随后通过 DevEco Studio 安装并运行 entry。')
+p('5. 试听原音，选择预设并点击开始离线渲染。成功后试听结果，通过导出 WAV 选择目标位置。')
+h('电脑端演示')
+p('双击 output/Demo演示/离线编辑演示.html，建议使用 Chrome。该文件包含素材，不需要服务器和网络连接。选择预设后点击开始离线渲染，分别播放原音与结果，点击导出 WAV 保存。')
+p('电脑版使用 OfflineAudioContext 与 10 个 peaking BiquadFilter，Q 为 1.4。它真实改变音频，但内部滤波实现不等于 AudioSuite。电脑端计时只表示当前浏览器的处理耗时，不进入鸿蒙性能结论。')
+p('演示目录附三组浏览器生成的 WAV、两张截图和无声操作录屏。音频请播放 WAV 或在交互演示中试听；录屏用于说明交互步骤。')
+page();h('验证结果与验收计划')
+table(['项目','已完成证据','待完成内容'],[['原生构建','API 24 下 ArkTS、C++ 和 HAP 打包通过','开发签名及真机安装'],['电脑演示','三种预设处理、播放调用与 WAV 导出验证','跨浏览器兼容检查'],['真机连接','HDC 检查返回 Empty','USB 调试授权和设备连接'],['音质与性能','不提供原生实测结论','听感、削波、耗时、峰值内存']])
+p('真机验收建议：直通预设检查声道顺序、时长与样本幅值；清晰和温暖预设检查差异、削波和爆音；连续处理 20 次观察资源增长；模拟缺失输入、不可写输出和不支持节点，确认失败可恢复。')
+p('性能采集应记录设备型号、系统版本、SDK、音频时长与格式、预设、冷热启动、处理耗时、峰值内存和文件大小。比较不同实现时需使用同一素材和参数，不混用浏览器与 AudioSuite 数据。')
+h('后续扩展')
+p('第一步增加系统音频导入和解码，统一转换为 PCM。第二步增加可调增益、峰值检测与限制器。第三步引入任务取消、进度和长音频流式处理。需要音源分离或混音时，再扩展多输出与多输入管线，并单独验证节点能力。')
+h('参考资料')
+p('华为离线编辑文档：https://developer.huawei.com/consumer/cn/doc/doccenter-capabilities/audio-suite-manual-rendering')
+p('官方示例：https://gitcode.com/HarmonyOS_Samples/guide-snippets/tree/master/Media/Audio/AudioSuiteSample')
+p('实现和验证依据：本项目 offline_engine.cpp、Index.ets、.build/native-build.log、.build/browser-test.json。官方示例 README 与其下载版本配置存在差异，本项目以实际 API 24 编译结果为准。')
+d.save(r/'output/文档/AudioSuite_离线编辑技术方案.docx');(r/'output/文档/AudioSuite_离线编辑技术方案.md').write_text('\n'.join(md))

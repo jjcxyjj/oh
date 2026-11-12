@@ -1,0 +1,26 @@
+[
+  {
+    "file": "人声清晰.wav",
+    "channels": 2,
+    "sample_rate": 48000,
+    "frames": 2400000,
+    "sample_width": 2,
+    "bytes": 9600044
+  },
+  {
+    "file": "原声直通.wav",
+    "channels": 2,
+    "sample_rate": 48000,
+    "frames": 2400000,
+    "sample_width": 2,
+    "bytes": 9600044
+  },
+  {
+    "file": "低频温暖.wav",
+    "channels": 2,
+    "sample_rate": 48000,
+    "frames": 2400000,
+    "sample_width": 2,
+    "bytes": 9600044
+  }
+]

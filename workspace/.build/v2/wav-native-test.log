@@ -1,0 +1,1 @@
+PASS: WAV roundtrip, gain, EOF, extra chunks, invalid format and bounds

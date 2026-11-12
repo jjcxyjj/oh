@@ -1,0 +1,6 @@
+# ninja log v6
+660	787	1794309509605986618	/Users/jiaoyuanxiang/Desktop/oh/chatgpt/output/OfflineAudioDemo/entry/build/default/intermediates/cmake/default/obj/x86_64/libentry.so	3983ac8bba2936f4
+5	659	1794309508951530961	CMakeFiles/entry.dir/offline_engine.cpp.o	d0ed3db35336e3a2
+17	352	1794468022850460761	CMakeFiles/entry.dir/offline_engine.cpp.o	6d567057e67d989d
+17	437	1794468022850658507	CMakeFiles/entry.dir/audio_pipeline.cpp.o	132c3691b2980dff
+437	478	1794468023270295243	/Users/jiaoyuanxiang/Desktop/oh/workspace/output/OfflineAudioDemo/entry/build/default/intermediates/cmake/default/obj/x86_64/libentry.so	9af6fb3dd645e392

@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+project(OfflineAudioDemo)
+add_library(entry SHARED offline_engine.cpp audio_pipeline.cpp)
+target_compile_features(entry PRIVATE cxx_std_17)
+target_link_libraries(entry PUBLIC libace_napi.z.so libohaudiosuite.so)

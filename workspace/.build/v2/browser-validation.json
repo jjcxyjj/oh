@@ -1,0 +1,160 @@
+{
+  "unit": {
+    "flatError": 2.070729723216598e-13,
+    "reconstructError": 3.725290298461914e-9,
+    "mixError": 6.8917870299500805e-9,
+    "centerMeanError": 4.8422016510002535e-9,
+    "frames": 48000,
+    "missingB": true
+  },
+  "runs": [
+    {
+      "id": "run-1794470732706-1",
+      "inputFingerprint": "e5f0cb75",
+      "mode": "eq",
+      "elapsed": 434.7999999523163,
+      "outputs": [
+        {
+          "name": "EQ 处理结果",
+          "peak": 0.7732080817222595,
+          "clipped": 0,
+          "fingerprint": "2ebba8e5",
+          "frames": 2400000,
+          "bytes": 9600044
+        }
+      ]
+    },
+    {
+      "id": "run-1794470733239-2",
+      "inputFingerprint": "e5f0cb75",
+      "mode": "separate",
+      "elapsed": 1204.1000000238419,
+      "outputs": [
+        {
+          "name": "估计人声（中置成分）",
+          "peak": 0.6767639517784119,
+          "clipped": 0,
+          "fingerprint": "48af87e5",
+          "frames": 2400000,
+          "bytes": 9600044
+        },
+        {
+          "name": "残余伴奏",
+          "peak": 0.24633899331092834,
+          "clipped": 0,
+          "fingerprint": "bf8695e5",
+          "frames": 2400000,
+          "bytes": 9600044
+        }
+      ]
+    },
+    {
+      "id": "run-1794470734539-3",
+      "inputFingerprint": "e5f0cb75",
+      "mode": "mix",
+      "elapsed": 147.29999995231628,
+      "outputs": [
+        {
+          "name": "双素材混音",
+          "peak": 0.448373407125473,
+          "clipped": 0,
+          "fingerprint": "4d0bea13",
+          "frames": 2400000,
+          "bytes": 9600044
+        }
+      ]
+    },
+    {
+      "id": "run-1794470734755-4",
+      "inputFingerprint": "e5f0cb75",
+      "mode": "cascade",
+      "elapsed": 419,
+      "outputs": [
+        {
+          "name": "级联混音结果",
+          "peak": 0.5412456393241882,
+          "clipped": 0,
+          "fingerprint": "82d695a3",
+          "frames": 2400000,
+          "bytes": 9600044
+        }
+      ]
+    },
+    {
+      "id": "run-1794470735272-5",
+      "inputFingerprint": "e5f0cb75",
+      "mode": "remix",
+      "elapsed": 1583.9000000953674,
+      "outputs": [
+        {
+          "name": "估计人声（中置成分）",
+          "peak": 0.6767639517784119,
+          "clipped": 0,
+          "fingerprint": "48af87e5",
+          "frames": 2400000,
+          "bytes": 9600044
+        },
+        {
+          "name": "残余伴奏",
+          "peak": 0.24633899331092834,
+          "clipped": 0,
+          "fingerprint": "bf8695e5",
+          "frames": 2400000,
+          "bytes": 9600044
+        },
+        {
+          "name": "分离后重新混音",
+          "peak": 0.5425623059272766,
+          "clipped": 0,
+          "fingerprint": "c571c1dd",
+          "frames": 2400000,
+          "bytes": 9600044
+        }
+      ]
+    }
+  ],
+  "imported": {
+    "id": "run-1794470737805-6",
+    "inputFingerprint": "3cede214",
+    "mode": "eq",
+    "elapsed": 19.100000023841858,
+    "outputs": [
+      {
+        "name": "EQ 处理结果",
+        "peak": 0.1185719445347786,
+        "clipped": 0,
+        "fingerprint": "cf6059c2",
+        "frames": 48000,
+        "bytes": 192044
+      }
+    ]
+  },
+  "errors": [],
+  "requests": [
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/index.html",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/styles.css",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-basic.png",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/source-data.js",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/dsp.js",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/app.js",
+    "blob:http://127.0.0.1:18765/860f3986-fda4-4c3d-8691-c6f5fc888fd3",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-cascade.png",
+    "blob:http://127.0.0.1:18765/0dd0f83d-60f7-4f3d-a733-5648f67eccef",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-basic.png",
+    "blob:http://127.0.0.1:18765/e9314077-0b78-44ef-b3a7-1d21e4f46c47",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-separation.png",
+    "blob:http://127.0.0.1:18765/bded5cdd-c1cc-4044-a20e-a126d0b949c6",
+    "blob:http://127.0.0.1:18765/ab24d0c3-93bf-4798-97ab-8a3661cbdc7d",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-cascade.png",
+    "blob:http://127.0.0.1:18765/da86d733-ac31-4aad-a2dc-5592141d2058",
+    "blob:http://127.0.0.1:18765/ec151f0d-777d-4a80-8144-aa6cd2f2ead1",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-separation.png",
+    "blob:http://127.0.0.1:18765/18cba8e6-dc83-4fc8-b24a-ae0f80b2cab9",
+    "blob:http://127.0.0.1:18765/a3e235b2-8260-4922-a6a7-51124b85dd70",
+    "blob:http://127.0.0.1:18765/d19645aa-6342-4db6-8a73-a33ee04d63eb",
+    "blob:http://127.0.0.1:18765/b8ee2ff2-4f7f-4d58-8d5d-5494c159dfa5",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-basic.png",
+    "blob:http://127.0.0.1:18765/dc0165ff-cb5b-4d3d-8bb3-05d8825ba317",
+    "http://127.0.0.1:18765/output/Demo%E6%BC%94%E7%A4%BA/assets/huawei-cascade.png"
+  ]
+}

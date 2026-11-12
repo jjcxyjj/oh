@@ -13,13 +13,10 @@
 * limitations under the License.
 */
 
+// Previewer 不能运行 AudioSuite，明确拒绝，禁止伪造算法成功。
 const NativeMock: Record<string, Object> = {
-  'add': (a: number, b: number) => {
-    return a + b;
-  },
-  'CheckNodeSupport': (nodeType: number) => {
-    return true;
-  },
+  'run': async (): Promise<void> => {
+    throw new Error('Previewer 不支持 AudioSuite，请连接鸿蒙设备运行');
+  }
 };
-
 export default NativeMock;

@@ -1,1 +1,7 @@
-export const render: (input: string, output: string, preset: number) => Promise<string>;
+export interface RenderReport {
+  paths: string[];
+  labels: string[];
+  elapsedMs: number;
+}
+export const run: (inputA: string, inputB: string, outputPrefix: string,
+  mode: number, preset: number, gainA: number, gainB: number) => Promise<RenderReport>;

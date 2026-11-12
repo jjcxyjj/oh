@@ -1,25 +1,32 @@
-# 离线音频编辑 Demo 交付导航
+# 离线音频编辑实验室 v2
 
-所有内容均位于本文件所在的 oh/chatgpt 目录。
+所有开发与产出均位于本目录 `oh/workspace`。
 
-## 建议先看
-1. 双击 `output/Demo演示/离线编辑演示.html`：可交互的电脑演示，包含素材，无需联网。
-2. 打开 `output/PPT/AudioSuite_离线编辑方案.pptx`：六页方案，沿用指定 ACE-Step 美化版样式。
-3. 打开 `output/文档/AudioSuite_离线编辑技术方案.docx`：六页技术说明，另附 Markdown。
-4. 播放 `output/Demo演示/离线编辑操作演示.mp4`：无声操作录屏。音效请在 HTML 或 WAV 中试听。
+## 先打开这两个文件
 
-## 原生 Demo
-`output/OfflineAudioDemo` 是 DevEco Studio 工程。`output/安装包/OfflineAudioDemo-unsigned.hap` 是 API 24 构建通过的未签名包。
-需要自己的开发签名及支持 AudioSuite 的鸿蒙真机。当前 HDC 未发现设备，因此未完成真机安装、听感或性能验收。
-根目录 `build_demo.command` 可重新构建。本机 SDK 路径已写在脚本中，其他电脑可按安装位置调整。
+- `output/Demo演示/index.html`：五个任务页签，现场运行算法、查看官网管线原图、试听和导出。可直接双击，保留旁边的 JS、CSS 与 assets 文件。
+- `output/学习指南/代码导读.md`：从入口开始解释 ArkTS、N-API、C++ 管线与浏览器算法，回答预生成 WAV 和现场计算的区别。
 
-## 演示材料
-`output/Demo演示` 包含交互 HTML、操作视频、两张截图、三种预设 WAV 与演示讲稿。
-电脑版使用 Web Audio，原生版使用 AudioSuite，二者内部算法和耗时不同。附带 WAV 均由电脑版生成。
+## 功能
 
-## 验证记录
-`.build/native-build.log`：原生构建日志。
-`.build/browser-test.json`：三种预设的浏览器处理记录。
-`.build/wav-validation.json`：导出 WAV 格式检查。
-`.build/deck-validation.json`：PPT 结构、字体与布局校验。
-`.build` 同时保留生成脚本、参考渲染、排版检查图与临时构建内容。
+均衡器（完整三种预设及十段增益图）、音源分离、双素材混音、EQ/声场/混音级联、分离后重新混音。任务页支持 URL 锚点直达。
+
+鸿蒙工程调用 AudioSuite。网页使用 Web Audio 与传统中置频谱 DSP 分离，不能替代华为分离模型；单声道与中置乐器等局限在页面中明确说明。
+
+## 工程和方案
+
+- `output/OfflineAudioDemo`：DevEco Studio 工程，API 24 编译通过。
+- `output/安装包/OfflineAudioDemo-unsigned.hap`：新版未签名 HAP，需要配置开发签名和真机验收。
+- `output/PPT/AudioSuite_离线编辑方案.pptx`：六页方案，页头 #2F5597，分隔线 #8064A2。
+- `output/文档/AudioSuite_离线编辑技术方案.docx` 与 `.md`：v2 技术方案。
+- `output/Demo演示/assets`：华为官网三张原始示意图及来源清单。
+
+## 历史材料
+
+`output/Demo演示` 内原有三个预设 WAV、旧截图、旧 MP4 为 v1 EQ 演示的历史导出，保留供对照。新版交互页面不读取这些效果文件。新版的输入仍是原始 PCM，结果按按钮运行后生成。
+
+## 验证与运行
+
+`build_demo.command` 重新构建原生项目。需要 DevEco Studio 和 HarmonyOS 6.1.1 API 24。
+`.build/v2` 保存本次构建日志、浏览器实际计算测试、截图、原版备份和文档/PPT 校验记录。
+真机尚未验收，编译通过不代表设备运行通过。网页可双击 HTML 使用，或在本目录运行 `python3 -m http.server 18765 --bind 127.0.0.1` 后打开 `/output/Demo演示/index.html`。
